@@ -41,6 +41,12 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun login(requestListener: RequestListener) {
+
+        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+            requestListener.onFailed(java.lang.Exception("Boş Alan Olmamalı"))
+            return
+        }
+
         authentication.signInWithEmailAndPassword(email ?: "", password ?: "")
             .addOnCompleteListener(object : OnCompleteListener<AuthResult> {
                 override fun onComplete(task: Task<AuthResult>) {

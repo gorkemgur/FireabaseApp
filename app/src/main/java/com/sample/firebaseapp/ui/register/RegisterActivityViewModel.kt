@@ -37,6 +37,10 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
         this.email = email
     }
 
+    fun getEmail(): String? {
+        return email
+    }
+
     fun setPassword(password: String?) {
         this.password = password
     }
@@ -52,6 +56,12 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
     fun register(requestListener: RequestListener) {
         if (authentication.currentUser != null)
             return
+
+        if (email.isNullOrEmpty() || password.isNullOrEmpty() || name.isNullOrEmpty() || surName.isNullOrEmpty()) {
+            requestListener.onFailed(java.lang.Exception("Boş Alan Olmamalı"))
+            return
+        }
+
 
         authentication.createUserWithEmailAndPassword(email ?: "", password ?: "")
             .addOnCompleteListener(object : OnCompleteListener<AuthResult> {
@@ -70,11 +80,12 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     private fun saveUserToDatabase(requestListener: RequestListener) {
-        userModel = UserModel(name, surName)
+        userModel = UserModel(name, surName, userId)
         databaseReference.child("Users").child(userId ?: "")
             .setValue(userModel)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    authentication.signOut()
                     requestListener.onSuccess()
                 } else {
                     requestListener.onFailed(Exception("Kayıt Başarısız"))

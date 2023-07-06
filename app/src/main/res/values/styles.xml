@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SampleAppInputText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
+        <item name="hintAnimationEnabled">false</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+
+</resources>

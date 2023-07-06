@@ -29,16 +29,16 @@ class RegisterActivity : BaseActivity() {
         binding.apply {
             registerButton.setOnClickListener {
                 showLoadingProgressBar("Lütfen Bekleyin")
-                viewModel.setEmail(emailEditText.text.toString().trim())
-                viewModel.setPassword(passwordEditText.text.toString().trim())
-                viewModel.setName(nameEditText.text.toString().trim())
-                viewModel.setSurname(surnameEditText.text.toString().trim())
+                viewModel.setEmail(emailEditText.text?.toString()?.trim())
+                viewModel.setPassword(passwordEditText.text?.toString()?.trim())
+                viewModel.setName(nameEditText.text?.toString()?.trim())
+                viewModel.setSurname(surnameEditText.text?.toString()?.trim())
                 viewModel.register(requestListener = object : RequestListener {
                     override fun onSuccess() {
                         dismissProgressBar()
                         Toast.makeText(
                             this@RegisterActivity,
-                            "Kayıt Başarılı ${nameEditText.text.toString().trim()}",
+                            "Kayıt Başarılı ${nameEditText.text?.toString()?.trim()}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -53,15 +53,16 @@ class RegisterActivity : BaseActivity() {
                             .show()
                     }
                 })
-                emailEditText.text.clear()
-                nameEditText.text.clear()
-                surnameEditText.text.clear()
-                passwordEditText.text.clear()
+                emailEditText.text?.clear()
+                nameEditText.text?.clear()
+                surnameEditText.text?.clear()
+                passwordEditText.text?.clear()
             }
 
 
             loginButton.setOnClickListener {
                 val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                intent.putExtra("userEmail", viewModel.getEmail())
                 startActivity(intent)
             }
         }

@@ -26,6 +26,9 @@ class LoginActivity : BaseActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         intent?.let {
+            if (it.hasExtra("userEmail")) {
+                binding.userNameTextView.text = it.extras?.getString("userEmail")
+            }
             if (it.hasExtra("userName")) {
                 val userName = it.extras?.getString("userName")
                 viewModel.setUserName(userName)
