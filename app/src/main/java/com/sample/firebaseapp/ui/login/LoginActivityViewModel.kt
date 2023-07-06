@@ -36,6 +36,10 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
         this.email = email
     }
 
+    fun getEmail(): String? {
+        return email
+    }
+
     fun setPassword(password: String?) {
         this.password = password
     }
@@ -53,6 +57,7 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                     if (task.isSuccessful) {
                         FirebaseHelper.getCurrentUserModel { userModel ->
                             userName = userModel?.name
+                            email = authentication.currentUser?.email
                             requestListener.onSuccess()
                         }
                     } else {

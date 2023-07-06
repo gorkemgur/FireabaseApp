@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.RequestListener
+import com.sample.firebaseapp.dashboard.DashBoardActivity
 import com.sample.firebaseapp.databinding.ActivityLoginBinding
 import com.sample.firebaseapp.extension.hideKeyboard
 import com.sample.firebaseapp.ui.common.BaseActivity
@@ -27,8 +26,12 @@ class LoginActivity : BaseActivity() {
 
         intent?.let {
             if (it.hasExtra("userEmail")) {
-                binding.userNameTextView.text = it.extras?.getString("userEmail")
+                var email: String? = null
+                email = it.extras?.getString("userEmail")
+                binding.emailEditText.setText(email)
+                viewModel.setEmail(email)
             }
+
             if (it.hasExtra("userName")) {
                 val userName = it.extras?.getString("userName")
                 viewModel.setUserName(userName)
@@ -61,20 +64,14 @@ class LoginActivity : BaseActivity() {
             })
             binding.root.hideKeyboard()
         }
-
-        binding.logoutButton.setOnClickListener {
-            Firebase.auth.signOut()
-            startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-        }
-
         setContentView(binding.root)
     }
 
     private fun setLoggedInUI() {
-        binding.userNameTextView.visibility = View.VISIBLE
-        binding.logoutButton.visibility = View.VISIBLE
-        binding.userNameTextView.text = viewModel.getUserName()
-        binding.logoutButton.isEnabled = true
-        binding.loginContainerView.visibility = View.GONE
+        finish()
+        val intent = Intent(this@LoginActivity, DashBoardActivity::class.java)
+        intent.putExtra("userName", viewModel.getUserName())
+        intent.putExtra("userEmail", viewModel.getEmail())
+        startActivity(intent)
     }
 }
