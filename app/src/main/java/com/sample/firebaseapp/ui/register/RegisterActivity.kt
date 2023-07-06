@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.sample.firebaseapp.RequestListener
+import com.sample.firebaseapp.dashboard.DashBoardActivity
 import com.sample.firebaseapp.databinding.ActivityRegisterBinding
 import com.sample.firebaseapp.helpers.FirebaseHelper
 import com.sample.firebaseapp.ui.common.BaseActivity
@@ -74,8 +75,9 @@ class RegisterActivity : BaseActivity() {
             dismissProgressBar()
             if (userModel != null) {
                 finish()
-                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                val intent = Intent(this@RegisterActivity, DashBoardActivity::class.java)
                 intent.putExtra("userName", userModel.name.toString())
+                intent.putExtra("userEmail", viewModel.getEmail())
                 startActivity(intent)
             } else {
                 binding.containerView.visibility = View.VISIBLE

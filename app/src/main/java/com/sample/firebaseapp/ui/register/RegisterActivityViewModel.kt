@@ -38,6 +38,9 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun getEmail(): String? {
+        if (email == null || email == "") {
+            email = Firebase.auth.currentUser?.email
+        }
         return email
     }
 
@@ -47,6 +50,10 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
 
     fun setName(name: String?) {
         this.name = name
+    }
+
+    fun getName(): String? {
+        return name
     }
 
     fun setSurname(surName: String?) {
