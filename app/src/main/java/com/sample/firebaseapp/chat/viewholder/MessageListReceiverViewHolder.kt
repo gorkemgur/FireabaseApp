@@ -1,4 +1,4 @@
-package com.sample.firebaseapp.chat.adapter
+package com.sample.firebaseapp.chat.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding

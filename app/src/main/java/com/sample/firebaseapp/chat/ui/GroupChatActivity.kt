@@ -1,9 +1,8 @@
-package com.sample.firebaseapp.chat
+package com.sample.firebaseapp.chat.ui
 
 import android.os.Bundle
-import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.View.OnLayoutChangeListener
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,20 +32,10 @@ class GroupChatActivity : AppCompatActivity() {
         binding.messageListRecyclerView.addOnLayoutChangeListener(OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             if (bottom <= oldBottom) {
                 binding.messageListRecyclerView.postDelayed(
-                    Runnable { binding.messageListRecyclerView.smoothScrollToPosition(bottom) },50
+                    Runnable { binding.messageListRecyclerView.smoothScrollToPosition(bottom) }, 50
                 )
             }
         })
-
-        binding.messageEditText.onFocusChangeListener = object : OnFocusChangeListener {
-            override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                if (hasFocus) {
-                    binding.messageListRecyclerView.smoothScrollToPosition(
-                        (viewModel.getMessageList()?.count() ?: 0) - 1
-                    )
-                }
-            }
-        }
 
         getMessages()
 
@@ -54,6 +43,15 @@ class GroupChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
+
+        val textMessage = binding.messageEditText.text.toString().trim()
+
+        if (textMessage.isNullOrEmpty()) {
+            Toast.makeText(this@GroupChatActivity, "Boş Mesaj Gönderemezsin", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
         viewModel.sendMessage(
             binding.messageEditText.text.toString().trim(),
             requestListener = object : RequestListener {
@@ -84,18 +82,26 @@ class GroupChatActivity : AppCompatActivity() {
 
     private fun setAdapter() {
         if (isFirstOpen == false) {
-            adapter?.updateData(viewModel.getMessageList())
-            binding.messageListRecyclerView.scrollToPosition(
-                (viewModel.getMessageList()?.count() ?: 0) - 1
-            )
-            return
+            updateAdapter()
         }
 
-        adapter = MessageListAdapter(viewModel.getMessageList(), viewModel.getUserId())
+        adapter = MessageListAdapter(
+            viewModel.getMessageList(),
+            viewModel.getUserId()
+        )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
         binding.messageListRecyclerView.adapter = adapter
 
+    }
+
+
+    private fun updateAdapter() {
+        adapter?.updateData(viewModel.getMessageList())
+        binding.messageListRecyclerView.scrollToPosition(
+            (viewModel.getMessageList()?.count() ?: 0) - 1
+        )
+        return
     }
 
 }

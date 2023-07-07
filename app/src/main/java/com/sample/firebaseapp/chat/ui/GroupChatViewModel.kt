@@ -1,4 +1,4 @@
-package com.sample.firebaseapp.chat
+package com.sample.firebaseapp.chat.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -48,22 +48,25 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun fetchMessageList(requestListener: RequestListener) {
-        databaseReference.child("GroupChats")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (dsp in snapshot.children) {
-                        if (dsp.value != null) {
-                            val message = dsp.getValue(MessageModel::class.java)
-                            message?.let { messageList?.add(message) }
+        databaseReference.child("GroupChats").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (dsp in snapshot.children) {
+                    if (dsp.value != null) {
+                        val message = dsp.getValue(MessageModel::class.java)
+                        message?.let { messageModel ->
+                            if ((messageList?.contains(messageModel)) != true) {
+                                messageList?.add(messageModel)
+                            }
                         }
                     }
-                    requestListener.onSuccess()
                 }
+                requestListener.onSuccess()
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    requestListener.onFailed(Exception(error.toException()))
-                }
-            })
+            override fun onCancelled(error: DatabaseError) {
+                requestListener.onFailed(Exception(error.toException()))
+            }
+        })
     }
 
     fun getMessageList(): ArrayList<MessageModel>? {

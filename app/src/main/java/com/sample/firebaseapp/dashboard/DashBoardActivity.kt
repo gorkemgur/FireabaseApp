@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.sample.firebaseapp.chat.GroupChatActivity
+import com.sample.firebaseapp.chat.ui.GroupChatActivity
 import com.sample.firebaseapp.databinding.ActivityDashBoardBinding
 import com.sample.firebaseapp.ui.register.RegisterActivity
 
