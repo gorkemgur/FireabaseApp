@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.sample.firebaseapp.chat.GroupChatActivity
 import com.sample.firebaseapp.databinding.ActivityDashBoardBinding
 import com.sample.firebaseapp.ui.register.RegisterActivity
 
@@ -14,7 +15,7 @@ class DashBoardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashBoardBinding
 
-    private val viewModel: DashboardActivityViewModel by viewModels()
+    private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,10 @@ class DashBoardActivity : AppCompatActivity() {
         binding.logoutButton.setOnClickListener {
             Firebase.auth.signOut()
             startActivity(Intent(this@DashBoardActivity, RegisterActivity::class.java))
+        }
+        binding.chatButton.setOnClickListener {
+            finish()
+            startActivity(Intent(this@DashBoardActivity, GroupChatActivity::class.java))
         }
         setLoggedInUI()
     }

@@ -11,7 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.helpers.FirebaseHelper
 
-class LoginActivityViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
 

@@ -3,9 +3,8 @@ package com.sample.firebaseapp.dashboard
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
-class DashboardActivityViewModel(application: Application) : AndroidViewModel(application) {
+class DashboardViewModel(application: Application) : AndroidViewModel(application) {
     private val context = getApplication<Application>()
-
 
     private var userName: String? = null
     private var email: String? = null

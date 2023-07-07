@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".chat.GroupChatActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/message_list_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/message_edit_text_input_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/message_edit_text_input_layout"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="5dp"
+        app:hintEnabled="false"
+        app:boxStrokeWidth="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        app:hintAnimationEnabled="false"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintEnd_toStartOf="@id/send_image_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/message_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/send_image_button"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="5dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_send"
+        app:layout_constraintTop_toTopOf="@id/message_edit_text_input_layout"
+        app:layout_constraintBottom_toBottomOf="@id/message_edit_text_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAllCaps="false"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

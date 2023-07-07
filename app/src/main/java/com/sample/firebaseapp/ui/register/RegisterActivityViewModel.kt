@@ -13,7 +13,7 @@ import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.model.UserModel
 
-class RegisterActivityViewModel(application: Application) : AndroidViewModel(application) {
+class RegisterViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
 
@@ -87,7 +87,7 @@ class RegisterActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     private fun saveUserToDatabase(requestListener: RequestListener) {
-        userModel = UserModel(name, surName, userId)
+        userModel = UserModel(name, surName, userId, "")
         databaseReference.child("Users").child(userId ?: "")
             .setValue(userModel)
             .addOnCompleteListener { task ->

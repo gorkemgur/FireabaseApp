@@ -54,6 +54,21 @@
 
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/chat_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat'i Başlat"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:visibility="visible"
+        android:layout_below="@id/user_email_text_view_value"/>
+
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/logout_button"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"

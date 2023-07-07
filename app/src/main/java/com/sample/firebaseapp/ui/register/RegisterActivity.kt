@@ -16,7 +16,7 @@ class RegisterActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
 
-    private val viewModel: RegisterActivityViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

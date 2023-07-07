@@ -15,7 +15,7 @@ import com.sample.firebaseapp.ui.register.RegisterActivity
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
 
-    private val viewModel: LoginActivityViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
