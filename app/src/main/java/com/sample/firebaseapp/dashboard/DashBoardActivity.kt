@@ -42,7 +42,6 @@ class DashBoardActivity : AppCompatActivity() {
             startActivity(Intent(this@DashBoardActivity, RegisterActivity::class.java))
         }
         binding.chatButton.setOnClickListener {
-            finish()
             startActivity(Intent(this@DashBoardActivity, GroupChatActivity::class.java))
         }
         setLoggedInUI()

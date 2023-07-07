@@ -3,14 +3,13 @@ package com.sample.firebaseapp.chat
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnFocusChangeListener
+import android.view.View.OnLayoutChangeListener
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
-import com.sample.firebaseapp.model.MessageModel
 
 class GroupChatActivity : AppCompatActivity() {
 
@@ -31,11 +30,20 @@ class GroupChatActivity : AppCompatActivity() {
             sendMessage()
         }
 
+        binding.messageListRecyclerView.addOnLayoutChangeListener(OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (bottom <= oldBottom) {
+                binding.messageListRecyclerView.postDelayed(
+                    Runnable { binding.messageListRecyclerView.smoothScrollToPosition(bottom) },50
+                )
+            }
+        })
 
         binding.messageEditText.onFocusChangeListener = object : OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
-                    binding.messageListRecyclerView.smoothScrollToPosition((viewModel.getMessageList()?.count() ?: 0) -1)
+                    binding.messageListRecyclerView.smoothScrollToPosition(
+                        (viewModel.getMessageList()?.count() ?: 0) - 1
+                    )
                 }
             }
         }
@@ -77,7 +85,9 @@ class GroupChatActivity : AppCompatActivity() {
     private fun setAdapter() {
         if (isFirstOpen == false) {
             adapter?.updateData(viewModel.getMessageList())
-            binding.messageListRecyclerView.scrollToPosition((viewModel.getMessageList()?.count() ?: 0) - 1)
+            binding.messageListRecyclerView.scrollToPosition(
+                (viewModel.getMessageList()?.count() ?: 0) - 1
+            )
             return
         }
 
