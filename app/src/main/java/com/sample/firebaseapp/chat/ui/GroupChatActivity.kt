@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.chat.ui
 
 import android.os.Bundle
+import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -36,6 +37,16 @@ class GroupChatActivity : AppCompatActivity() {
                 )
             }
         })
+
+        binding.messageEditText.onFocusChangeListener = object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                if (hasFocus) {
+                    binding.messageListRecyclerView.post {
+                        binding.messageListRecyclerView.layoutManager?.scrollToPosition((viewModel.getMessageList()?.size ?: 0) - 1)
+                    }
+                }
+            }
+        }
 
         getMessages()
 
