@@ -41,9 +41,9 @@ class GroupChatActivity : AppCompatActivity() {
         binding.messageEditText.onFocusChangeListener = object : OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
-                    binding.messageListRecyclerView.smoothScrollToPosition(
-                        (viewModel.getMessageList()?.count() ?: 0) - 1
-                    )
+                    binding.messageListRecyclerView.post {
+                        binding.messageListRecyclerView.layoutManager?.scrollToPosition((viewModel.getMessageList()?.size ?: 0) - 1)
+                    }
                 }
             }
         }
