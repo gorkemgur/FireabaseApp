@@ -1,6 +1,9 @@
 package com.sample.firebaseapp.chat.adapter
 
+import android.app.AlertDialog
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
@@ -9,7 +12,8 @@ import com.sample.firebaseapp.model.MessageModel
 
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
-    private val currentUserId: String?
+    private val currentUserId: String?,
+    private val deleteListener: (MessageModel) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
@@ -43,13 +47,37 @@ class MessageListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+
         if (holder is MessageListReceiverViewHolder) {
             holder.bind(items?.get(position))
-        }
-
-        if (holder is MessageListSenderViewHolder) {
+            if (items?.get(position)?.isDeleted == true)
+                holder.binding.messageTextView.setTextColor(Color.GRAY)
+            else
+                holder.binding.messageTextView.setTextColor(Color.BLACK)
+        } else if (holder is MessageListSenderViewHolder){
+            holder.itemView.setOnLongClickListener {
+                items?.get(position)
+                    ?.let { it1 -> showDeleteOption(holder.binding.root, it1, position ) }
+                true
+            }
             holder.bind(items?.get(position))
+            if (items?.get(position)?.isDeleted == true)
+                holder.binding.messageTextView.setTextColor(Color.GRAY)
+            else
+                holder.binding.messageTextView.setTextColor(Color.BLACK)
         }
+    }
+
+    private fun showDeleteOption(view: View, message: MessageModel, position: Int) {
+        AlertDialog.Builder(view.context)
+            .setTitle("Delete message?")
+            .setPositiveButton("Delete") {  _, _ ->
+                deleteListener.invoke(items?.get(position)!!)
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+            .show()
     }
 
     override fun getItemCount(): Int {

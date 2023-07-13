@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
+import com.sample.firebaseapp.model.MessageModel
 
 class GroupChatActivity : AppCompatActivity() {
 
@@ -91,11 +92,18 @@ class GroupChatActivity : AppCompatActivity() {
             return
         }
 
-        adapter = MessageListAdapter(viewModel.getMessageList(), viewModel.getUserId())
+        adapter = MessageListAdapter(
+            viewModel.getMessageList(), 
+            viewModel.getUserId()
+        ) { message -> onDeleteMessage(message) }
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
         binding.messageListRecyclerView.adapter = adapter
 
+    }
+
+    private fun onDeleteMessage(message: MessageModel) {
+        viewModel.deleteMessage(message)
     }
 
 }

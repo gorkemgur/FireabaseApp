@@ -15,6 +15,7 @@ import com.sample.firebaseapp.model.UserModel
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GroupChatViewModel(application: Application) : AndroidViewModel(application) {
     private val context = getApplication<Application>()
@@ -51,6 +52,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
         databaseReference.child("GroupChats")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    messageList?.clear()
                     for (dsp in snapshot.children) {
                         if (dsp.value != null) {
                             val message = dsp.getValue(MessageModel::class.java)
@@ -69,6 +71,40 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun getMessageList(): ArrayList<MessageModel>? {
         return messageList
     }
+
+    fun deleteMessage(message: MessageModel) {
+        val messageText = message.message
+        val messageTime = message.messageTime
+
+        val messageToDelete = messageList?.find { it.message == messageText && it.messageTime == messageTime }
+        if (messageToDelete != null) {
+
+
+            val query = databaseReference.child("GroupChats").orderByChild("message").equalTo(messageText)
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (dsp in snapshot.children) {
+                        val snapshotMessageTime = dsp.child("messageTime").getValue(String::class.java)
+                        if (snapshotMessageTime == messageTime) {
+                            //dsp.ref.removeValue()
+                            dsp.ref.child("message").setValue("Message Deleted")
+                            dsp.ref.child("deleted").setValue(true)
+                            break
+                        }
+                    }
+
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle cancellation
+                }
+            })
+        }
+    }
+
+
+
 
     private fun getCurrentTime(): String? {
         val df: DateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
