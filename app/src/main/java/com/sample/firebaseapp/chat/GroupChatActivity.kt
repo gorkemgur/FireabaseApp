@@ -93,7 +93,7 @@ class GroupChatActivity : AppCompatActivity() {
         }
 
         adapter = MessageListAdapter(
-            viewModel.getMessageList(), 
+            viewModel.getMessageList(),
             viewModel.getUserId(),
             viewModel.getUserImage()
         ) { message -> onDeleteMessage(message) }

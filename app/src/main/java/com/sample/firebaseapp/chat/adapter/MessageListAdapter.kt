@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.chat.adapter
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
+import com.sample.firebaseapp.ui.profile.ProfileActivity
 
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
@@ -54,6 +56,12 @@ class MessageListAdapter(
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
                 holder.binding.messageTextView.setTextColor(Color.BLACK)
+            holder.binding.userNameTextView.setOnClickListener {
+                val it = Intent(holder.binding.root.context, ProfileActivity::class.java)
+                it.putExtra("userName", items?.get(position)?.userName)
+                it.putExtra("userImage", userImage)
+                holder.binding.root.context.startActivity(it)
+            }
         } else if (holder is MessageListSenderViewHolder) {
             holder.itemView.setOnLongClickListener {
                 items?.get(position)
@@ -65,6 +73,13 @@ class MessageListAdapter(
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
                 holder.binding.messageTextView.setTextColor(Color.BLACK)
+
+            holder.binding.userNameTextView.setOnClickListener {
+                val it = Intent(holder.binding.root.context, ProfileActivity::class.java)
+                it.putExtra("userName", items?.get(position)?.userName)
+                it.putExtra("userImage", userImage)
+                holder.binding.root.context.startActivity(it)
+            }
         }
     }
 

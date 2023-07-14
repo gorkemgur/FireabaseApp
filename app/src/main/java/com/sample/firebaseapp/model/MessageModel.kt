@@ -7,5 +7,5 @@ data class MessageModel(
     var messageTime: String?,
     var isDeleted: Boolean = false
 ) {
-    constructor(): this("","","","")
+    constructor(): this("","","","",)
 }
