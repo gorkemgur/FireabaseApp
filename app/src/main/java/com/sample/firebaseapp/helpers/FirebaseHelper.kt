@@ -1,5 +1,6 @@
 package com.sample.firebaseapp.helpers
 
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -7,6 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.model.UserModel
+import java.util.UUID
 
 object FirebaseHelper {
 
@@ -25,5 +27,9 @@ object FirebaseHelper {
         } else {
             callback(null)
         }
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return Firebase.auth.currentUser
     }
 }

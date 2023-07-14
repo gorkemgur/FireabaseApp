@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.ui.register
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -10,8 +11,12 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.model.UserModel
+import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 class RegisterViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -20,6 +25,8 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     private var authentication: FirebaseAuth = Firebase.auth
 
     private var databaseReference: DatabaseReference = Firebase.database.reference
+
+    private var storageReference: StorageReference = FirebaseStorage.getInstance().reference
 
     private var email: String? = null
 
@@ -32,6 +39,8 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     private var userModel: UserModel? = null
 
     private var userId: String? = null
+
+    private var photoUrl: String? = null
 
     fun setEmail(email: String?) {
         this.email = email
@@ -60,6 +69,14 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         this.surName = surName
     }
 
+    fun getPhotoUrl(): String? {
+        return photoUrl
+    }
+
+    fun setPhotoUrl(photoUrl: String?) {
+        this.photoUrl = photoUrl
+    }
+
     fun register(requestListener: RequestListener) {
         if (authentication.currentUser != null)
             return
@@ -76,6 +93,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     if (p0.isSuccessful) {
                         if (p0.result.user != null) {
                             userId = p0.result.user?.uid
+
                             saveUserToDatabase(requestListener)
                         }
                     } else {
@@ -87,7 +105,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun saveUserToDatabase(requestListener: RequestListener) {
-        userModel = UserModel(name, surName, userId, "")
+        userModel = UserModel(name, surName, userId, photoUrl)
         databaseReference.child("Users").child(userId ?: "")
             .setValue(userModel)
             .addOnCompleteListener { task ->
@@ -99,5 +117,34 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 }
 
             }
+    }
+
+    fun uploadProfilePhoto(
+        userId: String,
+        bitmap: Bitmap?,
+        requestListener: RequestListener
+    ) {
+        bitmap?.let {imageBitmap ->
+            val photoRef = storageReference.child("profile_photos/${UUID.randomUUID()}.jpg")
+
+            val baos = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+            val data = baos.toByteArray()
+
+            val uploadTask = photoRef.putBytes(data)
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
+                }
+                photoRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    photoUrl = task.result.toString()
+                    saveUserToDatabase(requestListener)
+                } else {
+                    requestListener.onFailed(Exception("Failed to upload profile photo"))
+                }
+            }
+        } ?: run { saveUserToDatabase(requestListener) }
     }
 }

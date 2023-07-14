@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.chat.GroupChatActivity
 import com.sample.firebaseapp.databinding.ActivityDashBoardBinding
 import com.sample.firebaseapp.ui.register.RegisterActivity
+import com.sample.firebaseapp.ui.register.RegisterViewModel
 
 class DashBoardActivity : AppCompatActivity() {
 

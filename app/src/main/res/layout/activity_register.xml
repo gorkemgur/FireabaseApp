@@ -26,6 +26,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/profile_photo_image_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_default_profile_photo"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center_horizontal"
+                 />
+
+            <Button
+                android:id="@+id/select_photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Photo"
+                android:layout_gravity="center_horizontal"/>
+
+
             <TextView
                 android:id="@+id/name_text_view"
                 android:layout_width="wrap_content"
