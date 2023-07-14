@@ -35,26 +35,7 @@ class RegisterActivity : BaseActivity() {
                     binding.profilePhotoImageView.setImageBitmap(selectedPhotoBitmap)
                     inputStream?.close()
 
-                    val userId = FirebaseHelper.getCurrentUser()?.uid ?: ""
-                    viewModel.uploadProfilePhoto(userId, selectedPhotoBitmap, object : RequestListener {
-                        override fun onSuccess() {
-                            dismissProgressBar()
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "Profile photo uploaded successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
 
-                        override fun onFailed(e: java.lang.Exception) {
-                            dismissProgressBar()
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "Failed to upload profile photo: ${e.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
                 } catch (e: Exception) {
                     Toast.makeText(
                         this@RegisterActivity,
@@ -96,6 +77,27 @@ class RegisterActivity : BaseActivity() {
                 viewModel.register(requestListener = object : RequestListener {
                     override fun onSuccess() {
                         dismissProgressBar()
+                        viewModel.uploadProfilePhoto(selectedPhotoBitmap, object : RequestListener {
+                            override fun onSuccess() {
+                                dismissProgressBar()
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "Profile photo uploaded successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
+
+                            override fun onFailed(e: Exception) {
+                                dismissProgressBar()
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "Failed to upload profile photo: ${e.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+
                         Toast.makeText(
                             this@RegisterActivity,
                             "Kayıt Başarılı ${nameEditText.text?.toString()?.trim()}",
@@ -109,8 +111,7 @@ class RegisterActivity : BaseActivity() {
                             this@RegisterActivity,
                             e.localizedMessage,
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
                 })
                 emailEditText.text?.clear()
@@ -118,6 +119,7 @@ class RegisterActivity : BaseActivity() {
                 surnameEditText.text?.clear()
                 passwordEditText.text?.clear()
             }
+
 
 
             loginButton.setOnClickListener {

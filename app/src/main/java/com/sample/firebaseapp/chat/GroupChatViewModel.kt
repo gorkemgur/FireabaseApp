@@ -22,7 +22,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
 
     private var databaseReference: DatabaseReference = Firebase.database.reference
 
-    private var messageList: kotlin.collections.ArrayList<MessageModel>? = arrayListOf()
+    private var messageList: ArrayList<MessageModel>? = arrayListOf()
 
     private var userModel: UserModel? = null
 
@@ -113,5 +113,9 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getUserId(): String? {
         return userModel?.userId
+    }
+
+    fun getUserImage(): String? {
+        return userModel?.imageUrl
     }
 }

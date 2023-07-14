@@ -21,8 +21,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private var userName: String? = null
 
+    private var userImage: String? = null
+
     private var authentication: FirebaseAuth = Firebase.auth
 
+    fun setUserImage(userImage: String?) {
+        this.userImage = userImage
+    }
+
+    fun getUserImage(): String? {
+        return userImage
+    }
 
     fun setUserName(userName: String?) {
         this.userName = userName

@@ -13,12 +13,13 @@ import com.sample.firebaseapp.model.MessageModel
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
     private val currentUserId: String?,
-    private val deleteListener: (MessageModel) -> Unit
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    private val userImage: String?,
+    private val deleteListener: (MessageModel) -> Unit,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             MessageDetailEnum.RECEIVER.ordinal -> {
                 MessageListReceiverViewHolder(
@@ -26,7 +27,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
                 )
             }
             else -> {
@@ -47,21 +48,19 @@ class MessageListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-
         if (holder is MessageListReceiverViewHolder) {
-            holder.bind(items?.get(position))
+            holder.bind(items?.get(position), userImage)
             if (items?.get(position)?.isDeleted == true)
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
                 holder.binding.messageTextView.setTextColor(Color.BLACK)
-        } else if (holder is MessageListSenderViewHolder){
+        } else if (holder is MessageListSenderViewHolder) {
             holder.itemView.setOnLongClickListener {
                 items?.get(position)
                     ?.let { it1 -> showDeleteOption(holder.binding.root, it1, position ) }
                 true
             }
-            holder.bind(items?.get(position))
+            holder.bind(items?.get(position), userImage)
             if (items?.get(position)?.isDeleted == true)
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
@@ -84,7 +83,6 @@ class MessageListAdapter(
         return items?.size ?: 0
     }
 
-
     override fun getItemViewType(position: Int): Int {
         val message = items?.get(position)
         messageViewType = if (message?.userId == currentUserId) {
@@ -94,11 +92,9 @@ class MessageListAdapter(
         }
         return messageViewType.ordinal
     }
-
 }
-
 
 enum class MessageDetailEnum {
     RECEIVER,
-    SENDER,
+    SENDER
 }

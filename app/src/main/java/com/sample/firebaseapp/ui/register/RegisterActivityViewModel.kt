@@ -120,7 +120,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun uploadProfilePhoto(
-        userId: String,
         bitmap: Bitmap?,
         requestListener: RequestListener
     ) {

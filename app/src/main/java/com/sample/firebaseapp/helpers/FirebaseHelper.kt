@@ -29,7 +29,17 @@ object FirebaseHelper {
         }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
-        return Firebase.auth.currentUser
+    fun getUserPhotoUrl(userId: String, callback: (String?) -> Unit) {
+        Firebase.database.reference.child("Users").child(userId).child("imageUrl")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val photoUrl = snapshot.value as? String
+                    callback(photoUrl)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callback(null)
+                }
+            })
     }
 }
