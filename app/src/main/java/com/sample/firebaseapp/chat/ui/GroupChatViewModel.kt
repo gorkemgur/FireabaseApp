@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.chat.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,7 +35,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun sendMessage(message: String?, requestListener: RequestListener) {
         val key = databaseReference.child("GroupChats").push().key
         val messageModel =
-            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime())
+            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime(),key)
         key?.let { chatKey ->
             databaseReference.child("GroupChats").child(chatKey).setValue(messageModel)
                 .addOnCompleteListener { task ->
@@ -80,5 +81,14 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getUserId(): String? {
         return userModel?.userId
+    }
+
+    fun deleteMessage(messageId:String){
+
+        databaseReference.child("GroupChats").child(messageId).removeValue()
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener { e-> Log.d("MessageListAdapter", "Failed to delete message: ${e.message}")}
     }
 }
