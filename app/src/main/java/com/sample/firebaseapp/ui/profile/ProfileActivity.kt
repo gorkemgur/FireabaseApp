@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.ui.profile
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import com.bumptech.glide.Glide
 import com.sample.firebaseapp.R
@@ -13,7 +14,7 @@ class ProfileActivity: BaseActivity() {
 
     private val viewModel : ProfileViewModel by viewModels()
 
-    var userId: String? = null
+    private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,25 +24,24 @@ class ProfileActivity: BaseActivity() {
         intent?.let {
             if (it.hasExtra("userId")) {
                 userId = it.getStringExtra("userId")
-                FirebaseHelper.getUserPhotoUrl(userId.toString()) { photoUrl ->
-                    if (photoUrl != null) {
+
+                viewModel.setUserProfile(userId) { userProfile ->
+                    if (userProfile != null) {
                         Glide.with(this)
-                            .load(photoUrl)
+                            .load(userProfile)
                             .placeholder(R.drawable.ic_default_profile_photo)
                             .into(binding.profilePhotoImageView)
-                        viewModel.setUserProfile(photoUrl)
                     }
                 }
 
-                FirebaseHelper.getUserEmail(userId.toString()) { userEmail ->
+                viewModel.setEmail(userId.toString()) { userEmail ->
                     binding.emailTextView.text = userEmail
-                    viewModel.setEmail(userEmail)
                 }
 
-                FirebaseHelper.getUserName(userId.toString()) { userName ->
+                viewModel.setUserName(userId.toString()) { userName ->
                     binding.nameTextView.text = userName
-                    viewModel.setUserName(userName)
                 }
+
 
             }
         }

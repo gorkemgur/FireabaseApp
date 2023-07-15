@@ -29,18 +29,21 @@ object FirebaseHelper {
         }
     }
 
-    fun getUserPhotoUrl(userId: String, callback: (String?) -> Unit) {
-        Firebase.database.reference.child("Users").child(userId).child("imageUrl")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val photoUrl = snapshot.value as? String
-                    callback(photoUrl)
-                }
+    fun getUserPhotoUrl(userId: String?, callback: (String?) -> Unit) {
+        if (userId != null) {
+            Firebase.database.reference.child("Users").child(userId).child("imageUrl")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val photoUrl = snapshot.value as? String
+                        callback(photoUrl)
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    callback(null)
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        callback(null)
+                    }
+                })
+        }
+
     }
 
     fun getUserEmail(userId: String?, callback: (String) -> Unit) {

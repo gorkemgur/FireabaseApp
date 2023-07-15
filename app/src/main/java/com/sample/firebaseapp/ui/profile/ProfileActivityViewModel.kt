@@ -2,6 +2,7 @@ package com.sample.firebaseapp.ui.profile
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.sample.firebaseapp.helpers.FirebaseHelper
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -9,27 +10,36 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private var userName: String? = null
     private var email: String? = null
 
-    fun setUserProfile(userProfile: String?) {
-        this.userProfile = userProfile
+    fun setUserProfile(userId: String?, callback: (String?) -> Unit) {
+        FirebaseHelper.getUserPhotoUrl(userId) { photoUrl ->
+            this.userProfile = photoUrl
+            callback(photoUrl)
+        }
     }
 
-    fun getUserProfile(): String? {
-        return userProfile
+    fun getUserProfile(callback: (String?) -> Unit) {
+        callback(userProfile)
     }
 
-    fun setUserName(userName: String?) {
-        this.userName = userName
+    fun setUserName(userId: String?, callback: (String?) -> Unit) {
+        FirebaseHelper.getUserName(userId) { userName ->
+            this.userName = userName
+            callback(userName)
+        }
     }
 
-    fun getUserName(): String? {
-        return userName
+    fun getUserName(callback: (String?) -> Unit) {
+        callback(userName)
     }
 
-    fun setEmail(email: String?) {
-        this.email = email
+    fun setEmail(userId: String?, callback: (String?) -> Unit) {
+        FirebaseHelper.getUserEmail(userId) { userEmail ->
+            this.email = userEmail
+            callback(userEmail)
+        }
     }
 
-    fun getEmail(): String? {
-        return email
+    fun getEmail(callback: (String?) -> Unit) {
+        callback(email)
     }
 }
