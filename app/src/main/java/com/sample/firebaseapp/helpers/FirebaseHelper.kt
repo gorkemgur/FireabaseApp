@@ -42,4 +42,40 @@ object FirebaseHelper {
                 }
             })
     }
+
+    fun getUserEmail(userId: String?, callback: (String) -> Unit) {
+        if (userId != null) {
+            Firebase.database.reference.child("Users").child(userId).child("userMail")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val userEmail = snapshot.value as? String
+                        callback(userEmail ?: "")
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        callback("")
+                    }
+                })
+        } else {
+            callback("")
+        }
+    }
+
+    fun getUserName(userId: String?, callback: (String) -> Unit) {
+        if (userId != null) {
+            Firebase.database.reference.child("Users").child(userId).child("name")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val userName = snapshot.value as? String
+                        callback(userName ?: "")
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        callback("")
+                    }
+                })
+        } else {
+            callback("")
+        }
+    }
 }

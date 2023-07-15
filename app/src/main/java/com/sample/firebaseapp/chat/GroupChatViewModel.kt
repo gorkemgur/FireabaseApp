@@ -115,7 +115,4 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
         return userModel?.userId
     }
 
-    fun getUserImage(): String? {
-        return userModel?.imageUrl
-    }
 }

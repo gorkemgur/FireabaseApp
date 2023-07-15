@@ -15,7 +15,6 @@ import com.sample.firebaseapp.ui.profile.ProfileActivity
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
     private val currentUserId: String?,
-    private val userImage: String?,
     private val deleteListener: (MessageModel) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -51,15 +50,14 @@ class MessageListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is MessageListReceiverViewHolder) {
-            holder.bind(items?.get(position), userImage)
+            holder.bind(items?.get(position))
             if (items?.get(position)?.isDeleted == true)
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
                 holder.binding.messageTextView.setTextColor(Color.BLACK)
             holder.binding.userNameTextView.setOnClickListener {
                 val it = Intent(holder.binding.root.context, ProfileActivity::class.java)
-                it.putExtra("userName", items?.get(position)?.userName)
-                it.putExtra("userImage", userImage)
+                it.putExtra("userId", items?.get(position)?.userId)
                 holder.binding.root.context.startActivity(it)
             }
         } else if (holder is MessageListSenderViewHolder) {
@@ -68,7 +66,7 @@ class MessageListAdapter(
                     ?.let { it1 -> showDeleteOption(holder.binding.root, it1, position ) }
                 true
             }
-            holder.bind(items?.get(position), userImage)
+            holder.bind(items?.get(position))
             if (items?.get(position)?.isDeleted == true)
                 holder.binding.messageTextView.setTextColor(Color.GRAY)
             else
@@ -76,8 +74,7 @@ class MessageListAdapter(
 
             holder.binding.userNameTextView.setOnClickListener {
                 val it = Intent(holder.binding.root.context, ProfileActivity::class.java)
-                it.putExtra("userName", items?.get(position)?.userName)
-                it.putExtra("userImage", userImage)
+                it.putExtra("userId", items?.get(position)?.userId)
                 holder.binding.root.context.startActivity(it)
             }
         }

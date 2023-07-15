@@ -95,7 +95,6 @@ class GroupChatActivity : AppCompatActivity() {
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
             viewModel.getUserId(),
-            viewModel.getUserImage()
         ) { message -> onDeleteMessage(message) }
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
