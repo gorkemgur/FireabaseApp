@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.sample.firebaseapp'
-    compileSdk 33
+    compileSdk 34
 
     buildFeatures {
         viewBinding = true
@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "com.sample.firebaseapp"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -46,6 +46,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+    implementation 'androidx.core:core-ktx:+'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'

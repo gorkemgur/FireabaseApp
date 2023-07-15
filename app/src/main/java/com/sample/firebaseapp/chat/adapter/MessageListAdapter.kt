@@ -3,6 +3,7 @@ package com.sample.firebaseapp.chat.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.sample.firebaseapp.LongPressed
 import com.sample.firebaseapp.chat.viewholder.MessageListReceiverViewHolder
 import com.sample.firebaseapp.chat.viewholder.MessageListSenderViewHolder
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
@@ -11,7 +12,8 @@ import com.sample.firebaseapp.model.MessageModel
 
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
-    private val currentUserId: String?
+    private val currentUserId: String?,
+    val longPressed: LongPressed
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
@@ -51,6 +53,10 @@ class MessageListAdapter(
 
         if (holder is MessageListSenderViewHolder) {
             holder.bind(items?.get(position))
+            holder.itemView.setOnLongClickListener {
+                longPressed.popUpMenu(it, items?.get(position))
+                return@setOnLongClickListener true
+            }
         }
     }
 

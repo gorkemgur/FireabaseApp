@@ -47,6 +47,40 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun deleteMessage(message: MessageModel?, requestListener: RequestListener) {
+        val messageQuery = databaseReference
+            .child("GroupChats")
+            .orderByChild("messageTime")
+            .equalTo(message?.messageTime)
+
+        messageQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (messageSnapshot in snapshot.children) {
+                    messageSnapshot.ref.removeValue()
+                }
+                val key = databaseReference.child("GroupChats").push().key
+                val messageModel =
+                    MessageModel(userModel?.name, userModel?.userId, "\uD83D\uDEAB Bu mesaj silindi", message?.messageTime)
+                key?.let { chatKey ->
+                    databaseReference.child("GroupChats").child(chatKey).setValue(messageModel)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                requestListener.onSuccess()
+                            } else {
+                                task.exception?.let { requestListener.onFailed(it) }
+                            }
+                        }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        }
+        )
+    }
+
     fun fetchMessageList(requestListener: RequestListener) {
         databaseReference.child("GroupChats").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -60,6 +94,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
                         }
                     }
                 }
+                messageList?.sortBy { it.messageTime }
                 requestListener.onSuccess()
             }
 
