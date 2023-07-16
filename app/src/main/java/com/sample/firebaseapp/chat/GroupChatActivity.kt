@@ -1,5 +1,6 @@
 package com.sample.firebaseapp.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -7,9 +8,16 @@ import android.view.View.OnLayoutChangeListener
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.sample.firebaseapp.OnItemClickListener
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
+import com.sample.firebaseapp.chat.adapter.MessageListReceiverViewHolder
+import com.sample.firebaseapp.chat.adapter.MessageListSenderViewHolder
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
+import com.sample.firebaseapp.helpers.FirebaseHelper
+import com.sample.firebaseapp.model.UserModel
 
 class GroupChatActivity : AppCompatActivity() {
 
@@ -20,6 +28,10 @@ class GroupChatActivity : AppCompatActivity() {
     private var adapter: MessageListAdapter? = null
 
     private var isFirstOpen: Boolean? = true
+
+    private var messageListSenderViewHolder : MessageListSenderViewHolder? = null
+
+    private var messageListReceiverViewHolder : MessageListReceiverViewHolder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,13 +52,13 @@ class GroupChatActivity : AppCompatActivity() {
 
         binding.messageEditText.onFocusChangeListener = object : OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                if (hasFocus) {
-                    binding.messageListRecyclerView.smoothScrollToPosition(
-                        (viewModel.getMessageList()?.count() ?: 0) - 1
-                    )
+                binding.messageListRecyclerView.post {
+                    binding.messageListRecyclerView.layoutManager?.scrollToPosition((viewModel.getMessageList()?.size ?: 0) - 1)
                 }
             }
         }
+
+
 
         getMessages()
 
@@ -74,6 +86,24 @@ class GroupChatActivity : AppCompatActivity() {
             override fun onSuccess() {
                 setAdapter()
                 isFirstOpen = false
+
+                var clickedUserSurName = intent.getStringExtra("userSurname")
+                var clickedUserEmail = intent.getStringExtra("userEmail")
+
+                adapter!!.setOnItemClickListener(object : OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+
+                        val intent = Intent(this@GroupChatActivity, UserProfileActivity::class.java)
+                        intent.putExtra("userId", viewModel.getMessageList()?.get(position)?.userId)
+                        intent.putExtra("userName", viewModel.getMessageList()?.get(position)?.userName)
+                        intent.putExtra("userSurname", clickedUserSurName)
+                        intent.putExtra("userEmail", clickedUserEmail)
+                        startActivity(intent)
+
+
+                    }
+                })
+
             }
 
             override fun onFailed(e: Exception) {

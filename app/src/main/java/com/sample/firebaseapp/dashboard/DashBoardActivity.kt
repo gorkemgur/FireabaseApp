@@ -42,7 +42,10 @@ class DashBoardActivity : AppCompatActivity() {
             startActivity(Intent(this@DashBoardActivity, RegisterActivity::class.java))
         }
         binding.chatButton.setOnClickListener {
-            startActivity(Intent(this@DashBoardActivity, GroupChatActivity::class.java))
+            val intent = Intent(this@DashBoardActivity, GroupChatActivity::class.java)
+            intent.putExtra("userSurname", viewModel.getUserName().toString())
+            intent.putExtra("userEmail", viewModel.getEmail().toString())
+            startActivity(intent)
         }
         setLoggedInUI()
     }

@@ -3,6 +3,7 @@ package com.sample.firebaseapp.chat.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.sample.firebaseapp.OnItemClickListener
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
@@ -13,6 +14,7 @@ class MessageListAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
+    private var mListener: OnItemClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         return when (viewType) {
@@ -22,7 +24,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ), mListener!!
                 )
             }
             else -> {
@@ -31,7 +33,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ), mListener!!
                 )
             }
         }
@@ -56,6 +58,9 @@ class MessageListAdapter(
         return items?.size ?: 0
     }
 
+    fun setOnItemClickListener(clickListener: OnItemClickListener) {
+        mListener = clickListener
+    }
 
     override fun getItemViewType(position: Int): Int {
         val message = items?.get(position)

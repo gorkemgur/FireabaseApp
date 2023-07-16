@@ -77,6 +77,7 @@ class RegisterActivity : BaseActivity() {
                 finish()
                 val intent = Intent(this@RegisterActivity, DashBoardActivity::class.java)
                 intent.putExtra("userName", userModel.name.toString())
+                intent.putExtra("userSurname", userModel.surName.toString())
                 intent.putExtra("userEmail", viewModel.getEmail())
                 startActivity(intent)
             } else {

@@ -7,7 +7,8 @@
     android:padding="10dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    tools:context=".dashboard.DashBoardActivity">
+    tools:context=".dashboard.DashBoardActivity"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/user_name_text_view_title"
