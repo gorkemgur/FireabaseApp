@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toTopOf="@id/message_text_container"
         app:layout_constraintEnd_toEndOf="@id/message_text_container"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="İsim" />
+        tools:text="İsim"
+        />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/message_text_container"

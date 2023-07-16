@@ -1,5 +1,6 @@
 package com.sample.firebaseapp.chat.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -15,8 +16,10 @@ import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
 import com.sample.firebaseapp.model.MessageModel
+import com.sample.firebaseapp.onClickProfile
+import com.sample.firebaseapp.ui.ProfileActivity
 
-class GroupChatActivity : AppCompatActivity(), LongPressed {
+class GroupChatActivity : AppCompatActivity(), LongPressed, onClickProfile {
 
     private lateinit var binding: ActivityGroupChatBinding
 
@@ -34,6 +37,7 @@ class GroupChatActivity : AppCompatActivity(), LongPressed {
         binding.sendImageButton.setOnClickListener {
             sendMessage()
         }
+
 
         binding.messageListRecyclerView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             if (bottom <= oldBottom) {
@@ -121,7 +125,8 @@ class GroupChatActivity : AppCompatActivity(), LongPressed {
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
             viewModel.getUserId(),
-            this
+            this,
+            this,
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
@@ -164,6 +169,11 @@ class GroupChatActivity : AppCompatActivity(), LongPressed {
             getDeclaredMethod("setForceShowIcon", Boolean::class.java).invoke(menu, true)
         }
 
+    }
+
+    override fun onClick(position: Int) {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
     }
 
 }

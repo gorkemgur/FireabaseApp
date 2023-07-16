@@ -7,13 +7,4 @@ data class MessageModel(
     var messageTime: String?
 ) {
     constructor(): this("","","","")
-
-    fun toMap() : Map<String, Any?> {
-        return mapOf(
-            "userName" to userName,
-            "userId" to userId,
-            "message" to message,
-            "messageTime" to messageTime,
-        )
-    }
 }
