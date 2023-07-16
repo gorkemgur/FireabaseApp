@@ -102,6 +102,7 @@ class GroupChatActivity : AppCompatActivity(), MessageClickListener {
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
             viewModel.getUserId(),
+            this,
             this
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
