@@ -19,6 +19,7 @@ import com.sample.firebaseapp.chat.viewholder.MessageListReceiverViewHolder
 import com.sample.firebaseapp.chat.viewholder.MessageListSenderViewHolder
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
+import com.sample.firebaseapp.helpers.FirebaseHelper
 import com.sample.firebaseapp.model.MessageModel
 
 class MessageListAdapter(
@@ -73,10 +74,18 @@ class MessageListAdapter(
                 }
                 //Navigating profile details
                 holder.binding.userNameTextView.setOnClickListener(){
-                    val intent= Intent(holder.itemView.context,ProfilePage::class.java).apply {
-                        putExtra("username",holder.binding.userNameTextView.text)
+                    var isOwner=false
+                    FirebaseHelper.getCurrentUserModel { userModel -> it
+                        if (holder.binding.userNameTextView.text==userModel?.name){
+                            isOwner=true
+                        }
+                        val intent= Intent(holder.itemView.context,ProfilePage::class.java).apply {
+                            putExtra("username",holder.binding.userNameTextView.text)
+                            putExtra("isOwner",isOwner)
+                        }
+                        holder.itemView.context.startActivity(intent)
                     }
-                    holder.itemView.context.startActivity(intent)
+
                 }
             }
             is MessageListSenderViewHolder -> {
@@ -88,10 +97,18 @@ class MessageListAdapter(
                 }
                 //Navigating profile details
                 holder.binding.userNameTextView.setOnClickListener(){
-                    val intent= Intent(holder.itemView.context,ProfilePage::class.java).apply {
-                        putExtra("username",holder.binding.userNameTextView.text)
+                    var isOwner=false
+                    FirebaseHelper.getCurrentUserModel { userModel -> it
+                        if (holder.binding.userNameTextView.text==userModel?.name){
+                            isOwner=true
+                        }
+                        val intent= Intent(holder.itemView.context,ProfilePage::class.java).apply {
+                            putExtra("username",holder.binding.userNameTextView.text)
+                            putExtra("isOwner",isOwner)
+                        }
+                        holder.itemView.context.startActivity(intent)
                     }
-                    holder.itemView.context.startActivity(intent)
+
                 }
             }
         }
