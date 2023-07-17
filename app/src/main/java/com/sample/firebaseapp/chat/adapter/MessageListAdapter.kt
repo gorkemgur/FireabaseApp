@@ -2,16 +2,22 @@ package com.sample.firebaseapp.chat.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.sample.firebaseapp.LongPressed
+import com.sample.firebaseapp.chat.ui.GroupChatActivity
 import com.sample.firebaseapp.chat.viewholder.MessageListReceiverViewHolder
 import com.sample.firebaseapp.chat.viewholder.MessageListSenderViewHolder
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
+import com.sample.firebaseapp.onClickProfile
 
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
-    private val currentUserId: String?
+    private val currentUserId: String?,
+    private val longPressed: LongPressed,
+    private var onClickProfile: onClickProfile,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
@@ -24,16 +30,17 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ), onClickProfile
                 )
             }
+
             else -> {
                 MessageListSenderViewHolder(
                     LayoutMessageSenderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ), onClickProfile
                 )
             }
         }
@@ -44,6 +51,10 @@ class MessageListAdapter(
         notifyDataSetChanged()
     }
 
+    fun onClickProfile(listener: onClickProfile) {
+        onClickProfile = listener
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is MessageListReceiverViewHolder) {
             holder.bind(items?.get(position))
@@ -51,6 +62,10 @@ class MessageListAdapter(
 
         if (holder is MessageListSenderViewHolder) {
             holder.bind(items?.get(position))
+            holder.itemView.setOnLongClickListener {
+                longPressed.popUpMenu(it, items?.get(position))
+                return@setOnLongClickListener true
+            }
         }
     }
 
