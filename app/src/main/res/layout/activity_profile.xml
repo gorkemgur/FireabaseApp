@@ -38,13 +38,6 @@
             android:layout_height="wrap_content"
             android:paddingVertical="40dp"
             android:text="@string/name" />
-
-        <TextView
-            android:id="@+id/textSurname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="40dp"
-            android:text="@string/surname" />
     </LinearLayout>
 
 

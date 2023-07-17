@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,6 +24,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.sample.firebaseapp.dashboard.DashboardViewModel
 import com.sample.firebaseapp.databinding.ActivityProfileBinding
 import java.util.UUID
 
@@ -35,7 +37,7 @@ class ProfileActivity : AppCompatActivity() {
     private var selectedPicture: Uri? = null
     private lateinit var storage : FirebaseStorage
     private var databaseReference: DatabaseReference = Firebase.database.reference
-
+    private val viewModel : DashboardViewModel by viewModels()
     private var authentication: FirebaseAuth = Firebase.auth
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -75,6 +77,9 @@ class ProfileActivity : AppCompatActivity() {
 
 
         }
+
+        binding.textEmail.text = viewModel.getEmail()
+        binding.textName.text = viewModel.getUserName()
 
         setContentView(binding.root)
 
