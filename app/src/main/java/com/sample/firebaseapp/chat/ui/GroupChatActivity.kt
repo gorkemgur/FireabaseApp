@@ -5,13 +5,16 @@ import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sample.firebaseapp.RequestListener
+import com.sample.firebaseapp.chat.adapter.MessageClickListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
+import com.sample.firebaseapp.model.MessageModel
 
-class GroupChatActivity : AppCompatActivity() {
+class GroupChatActivity : AppCompatActivity(), MessageClickListener {
 
     private lateinit var binding: ActivityGroupChatBinding
 
@@ -98,7 +101,9 @@ class GroupChatActivity : AppCompatActivity() {
 
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
-            viewModel.getUserId()
+            viewModel.getUserId(),
+            this,
+            this
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
@@ -115,4 +120,21 @@ class GroupChatActivity : AppCompatActivity() {
         return
     }
 
+    override fun showDeleteConfirmationDialog(message: MessageModel) {
+        if (message.userId == viewModel.getUserId()) {
+        AlertDialog.Builder(this)
+            .setTitle("Mesajı Sil")
+            .setMessage("Mesajı silmek istiyor musunuz?")
+            .setPositiveButton("Sil") { dialog, _ ->
+                viewModel.deleteMessage(message.messageId!!)
+                adapter?.removeMessage(message)
+                dialog.dismiss()
+            }
+            .setNegativeButton("İptal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    }
 }
