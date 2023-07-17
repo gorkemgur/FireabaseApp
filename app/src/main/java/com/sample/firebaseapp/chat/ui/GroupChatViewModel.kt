@@ -34,7 +34,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun sendMessage(message: String?, requestListener: RequestListener) {
         val key = databaseReference.child("GroupChats").push().key
         val messageModel =
-            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime())
+            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime(),key.toString())
         key?.let { chatKey ->
             databaseReference.child("GroupChats").child(chatKey).setValue(messageModel)
                 .addOnCompleteListener { task ->

@@ -50,6 +50,7 @@ class GroupChatActivity : AppCompatActivity() {
 
         getMessages()
 
+
         setContentView(binding.root)
     }
 
