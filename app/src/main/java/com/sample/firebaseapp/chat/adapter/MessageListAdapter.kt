@@ -30,7 +30,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ), onClickProfile
                 )
             }
 
