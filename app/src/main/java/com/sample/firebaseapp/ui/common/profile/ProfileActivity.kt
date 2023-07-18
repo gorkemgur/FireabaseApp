@@ -5,34 +5,42 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.databinding.ActivityProfileBinding
 import com.sample.firebaseapp.helpers.FirebaseHelper
 import com.sample.firebaseapp.ui.common.BaseActivity
+import java.io.File
 import java.io.IOException
+import java.util.*
 
 
 class ProfileActivity : BaseActivity() {
 
     companion object {
         private val IMAGE_CHOOSE = 1000;
-        private val IMAGE_TAKE = 1002;
+        private val IMAGE_TAKE_CAMERA = 1002;
         private val PERMISSION_CODE = 1001;
     }
 
     private lateinit var binding: ActivityProfileBinding
 
     private val viewModel: ProfileViewModel by viewModels()
+
+    private var file: File? = null
+
+    private var fileUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,33 +71,32 @@ class ProfileActivity : BaseActivity() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.profileImageView)
 
-        if (viewModel.isCurrentUser() == true) {
-            binding.galleryPhotoSelect.visibility = View.VISIBLE
-            binding.galleryPhotoSelect.setOnClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        permissions()?.let { it1 -> requestPermissions(it1, PERMISSION_CODE) }
-                    } else {
-                        chooseImageGallery();
-                    }
+        binding.galleryPhotoSelect.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                    permissions()?.let { it1 -> requestPermissions(it1, PERMISSION_CODE) }
                 } else {
                     chooseImageGallery();
                 }
+            } else {
+                chooseImageGallery();
             }
+        }
 
-            binding.cameraPhotoTake.visibility = View.VISIBLE
-
-            binding.cameraPhotoTake.setOnClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                        permissions()?.let { it1 -> requestPermissions(it1, PERMISSION_CODE) }
-                    } else {
-                        chooseImageCamera();
-                    }
+        binding.cameraPhotoTake.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                    requestPermissions(camera_permission, PERMISSION_CODE)
                 } else {
                     chooseImageCamera();
                 }
+            } else {
+                chooseImageCamera();
             }
+        }
+
+        if (viewModel.isCurrentUser() == true) {
+            binding.optionsMenu.visibility = View.VISIBLE
 
             binding.saveButton.setOnClickListener {
                 uploadImageDatabase()
@@ -98,8 +105,28 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun chooseImageCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, IMAGE_TAKE)
+        val imageFileName = "takenPhoto_${UUID.randomUUID()}" //make a better file name
+
+        val storageDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
+        file = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        )
+
+        fileUri = file?.let {
+            FileProvider.getUriForFile(
+                this@ProfileActivity,
+                "${packageName}.provider",  //(use your app signature + ".provider" )
+                it
+            )
+        }
+
+        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
+        startActivityForResult(takePhotoIntent, IMAGE_TAKE_CAMERA)
     }
 
     private fun chooseImageGallery() {
@@ -134,12 +161,10 @@ class ProfileActivity : BaseActivity() {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        } else if (requestCode == IMAGE_TAKE && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.extras != null) {
-                data.data?.let { uri ->
-                    viewModel.setImageUri(uri)
-                }
-                binding.profileImageView.setImageBitmap(data.extras?.get("data") as? Bitmap)
+        } else if (requestCode == IMAGE_TAKE_CAMERA && resultCode == Activity.RESULT_OK) {
+            fileUri?.let { uri ->
+                viewModel.setImageUri(uri)
+                binding.profileImageView.setImageURI(uri)
             }
         }
     }
@@ -148,14 +173,26 @@ class ProfileActivity : BaseActivity() {
         showLoadingProgressBar("Lütfen Bekleyin")
         viewModel.uploadUserProfileImage(object : RequestListener {
             override fun onSuccess() {
+                Toast.makeText(
+                    this@ProfileActivity,
+                    "Fotoğraf Başarıyla Kaydedildi",
+                    Toast.LENGTH_SHORT
+                ).show()
                 dismissProgressBar()
             }
 
             override fun onFailed(e: Exception) {
-                Toast.makeText(this@ProfileActivity, e.localizedMessage, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@ProfileActivity, e.localizedMessage, Toast.LENGTH_LONG)
+                    .show()
             }
         })
     }
+
+    var camera_permission = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA
+    )
 
     var storage_permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
