@@ -52,8 +52,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return userModel?.email
     }
 
-    fun getUserImageUrl(): String? {
-        return userModel?.imageUrl
+    fun getUserImageUrl(): String {
+        return userModel?.imageUrl ?: ""
     }
 
     fun uploadUserProfileImage(

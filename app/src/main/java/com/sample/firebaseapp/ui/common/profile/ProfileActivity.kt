@@ -15,11 +15,10 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.databinding.ActivityProfileBinding
 import com.sample.firebaseapp.helpers.FirebaseHelper
+import com.sample.firebaseapp.helpers.GlideHelper
 import com.sample.firebaseapp.ui.common.BaseActivity
 import java.io.File
 import java.io.IOException
@@ -62,14 +61,18 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun loadUI() {
-        binding.userNameTextView.text = viewModel.getUserName()
+        binding.userTitle.text = viewModel.getUserName()
         binding.userEmailTextView.text = viewModel.getUserEmail()
 
-        Glide.with(this@ProfileActivity)
-            .load(viewModel.getUserImageUrl())
-            .placeholder(com.sample.firebaseapp.R.drawable.ic_profile)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(binding.profileImageView)
+        binding.backButtonImageView.setOnClickListener {
+            finish()
+        }
+
+        GlideHelper.loadImage(
+            this@ProfileActivity,
+            binding.profileImageView,
+            viewModel.getUserImageUrl()
+        )
 
         binding.galleryPhotoSelect.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

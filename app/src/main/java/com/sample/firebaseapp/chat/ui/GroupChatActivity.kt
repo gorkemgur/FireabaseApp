@@ -135,7 +135,6 @@ class GroupChatActivity : AppCompatActivity() {
             FirebaseHelper.getUserModelWithUserId(userId) { userModel ->
                 val intent = Intent(this@GroupChatActivity, ProfileActivity::class.java)
                 intent.putExtra("userId", userModel?.userId)
-                finish()
                 startActivity(intent)
             }
         }
