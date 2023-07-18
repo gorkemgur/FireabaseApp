@@ -38,8 +38,8 @@ class MessageListAdapter(
                     LayoutMessageSenderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ), listener
                 )
             }
         }
@@ -57,14 +57,12 @@ class MessageListAdapter(
 
         if (holder is MessageListSenderViewHolder) {
             holder.bind(items?.get(position))
-            holder.itemView.setOnClickListener {
-                listener?.onLongClicked(items?.get(position))
-            }
         }
 
-        holder.itemView.setOnClickListener {
+        holder.itemView.rootView.setOnClickListener {
             listener?.onUserNameClicked(items?.get(position)?.userId)
         }
+
     }
 
     override fun getItemCount(): Int {

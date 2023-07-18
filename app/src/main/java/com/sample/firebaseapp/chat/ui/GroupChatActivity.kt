@@ -120,8 +120,9 @@ class GroupChatActivity : AppCompatActivity() {
                 .setPositiveButton("Sil") { dialog, _ ->
                     viewModel.setClickedMessageModel(messageModel)
                     deleteMessage()
+                    dialog.dismiss()
                 }
-                .setNegativeButton("İptal") { dialog, _ ->
+                .setNegativeButton("Vazgeç") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()

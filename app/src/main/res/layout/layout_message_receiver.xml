@@ -6,35 +6,42 @@
     android:layout_height="wrap_content"
     android:layout_gravity="end">
 
-    <TextView
-        android:id="@+id/user_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:textSize="10sp"
-        android:gravity="center_horizontal"
-        app:layout_constraintBottom_toTopOf="@id/message_text_container"
-        app:layout_constraintStart_toStartOf="@id/message_text_container"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="İsim" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/message_text_container"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/message_text_view"
+            android:id="@+id/user_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:padding="5dp"
-            android:textSize="12sp" />
+            android:gravity="center_horizontal"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@id/message_text_container"
+            app:layout_constraintStart_toStartOf="@id/message_text_container"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="İsim" />
 
-    </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/message_text_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/message_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:textSize="12sp" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
