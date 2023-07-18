@@ -5,7 +5,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.model.UserModel
 
@@ -16,7 +15,10 @@ object FirebaseHelper {
     fun getCurrentUserModel(callback: (UserModel?) -> Unit) {
         if (Firebase.auth.currentUser != null) {
             reference.child("Users").child(Firebase.auth.currentUser?.uid ?: "")
-                .addValueEventListener(object : ValueEventListener {
+                //BURADA SINGLE EVENT KULLANMAMIZ GEREKIYOR YOKSA
+                //APP BOYUNCA KULLANICIDA YAPTIĞIMIZ TÜM DEĞİŞİKLİKLER BURAYI
+                //TETIKLIYOR VE BU FONKSIYONUN ILK KULLANILDIĞI YERİ AÇIYOR.
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         callback(snapshot.getValue(UserModel::class.java))
                     }
@@ -32,14 +34,15 @@ object FirebaseHelper {
 
 
     fun getUserModelWithUserId(userId: String?, callback: (UserModel?) -> Unit) {
-        reference.child("Users").child(userId ?: "").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                callback(snapshot.getValue(UserModel::class.java))
-            }
+        reference.child("Users").child(userId ?: "")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    callback(snapshot.getValue(UserModel::class.java))
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                callback(null)
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    callback(null)
+                }
+            })
     }
 }

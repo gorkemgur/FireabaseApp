@@ -1,7 +1,7 @@
 package com.sample.firebaseapp.chat.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.Toast
@@ -15,6 +15,7 @@ import com.sample.firebaseapp.chat.adapter.MessageListener
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
 import com.sample.firebaseapp.helpers.FirebaseHelper
 import com.sample.firebaseapp.model.MessageModel
+import com.sample.firebaseapp.ui.common.profile.ProfileActivity
 
 class GroupChatActivity : AppCompatActivity() {
 
@@ -47,7 +48,9 @@ class GroupChatActivity : AppCompatActivity() {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
                     binding.messageListRecyclerView.post {
-                        binding.messageListRecyclerView.layoutManager?.scrollToPosition((viewModel.getMessageList()?.size ?: 0) - 1)
+                        binding.messageListRecyclerView.layoutManager?.scrollToPosition(
+                            (viewModel.getMessageList()?.size ?: 0) - 1
+                        )
                     }
                 }
             }
@@ -130,7 +133,10 @@ class GroupChatActivity : AppCompatActivity() {
 
         override fun onUserNameClicked(userId: String?) {
             FirebaseHelper.getUserModelWithUserId(userId) { userModel ->
-                Log.e("userModel", userModel.toString())
+                val intent = Intent(this@GroupChatActivity, ProfileActivity::class.java)
+                intent.putExtra("userId", userModel?.userId)
+                finish()
+                startActivity(intent)
             }
         }
     }
@@ -142,7 +148,8 @@ class GroupChatActivity : AppCompatActivity() {
             }
 
             override fun onFailed(e: java.lang.Exception) {
-                Toast.makeText(this@GroupChatActivity, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@GroupChatActivity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }

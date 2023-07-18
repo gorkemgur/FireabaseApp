@@ -3,6 +3,7 @@ package com.sample.firebaseapp.ui
 import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.sample.firebaseapp.dashboard.DashBoardActivity
 import com.sample.firebaseapp.databinding.ActivitySplashBinding
