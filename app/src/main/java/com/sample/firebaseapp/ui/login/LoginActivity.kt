@@ -24,6 +24,7 @@ class LoginActivity : BaseActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
+
         intent?.let {
             if (it.hasExtra("userEmail")) {
                 var email: String? = null

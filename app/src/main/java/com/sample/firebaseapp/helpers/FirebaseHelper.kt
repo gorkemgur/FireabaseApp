@@ -26,4 +26,20 @@ object FirebaseHelper {
             callback(null)
         }
     }
+    fun getUserModel(uid : String,callback: (UserModel?) -> Unit) {
+        if (Firebase.auth.currentUser != null) {
+            Firebase.database.reference.child("Users").child(uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        callback(snapshot.getValue(UserModel::class.java))
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        callback(null)
+                    }
+                })
+        } else {
+            callback(null)
+        }
+    }
 }

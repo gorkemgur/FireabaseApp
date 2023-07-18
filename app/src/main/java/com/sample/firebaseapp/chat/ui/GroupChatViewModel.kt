@@ -31,10 +31,12 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+
+
     fun sendMessage(message: String?, requestListener: RequestListener) {
         val key = databaseReference.child("GroupChats").push().key
         val messageModel =
-            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime())
+            MessageModel(key,userModel?.name, userModel?.userId, message, getCurrentTime(),userModel?.email)
         key?.let { chatKey ->
             databaseReference.child("GroupChats").child(chatKey).setValue(messageModel)
                 .addOnCompleteListener { task ->
@@ -46,6 +48,9 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
                 }
         }
     }
+
+
+
 
     fun fetchMessageList(requestListener: RequestListener) {
         databaseReference.child("GroupChats").addValueEventListener(object : ValueEventListener {
@@ -81,4 +86,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun getUserId(): String? {
         return userModel?.userId
     }
+
+
+
 }
