@@ -1,6 +1,7 @@
 package com.sample.firebaseapp.chat.ui
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -112,4 +113,5 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun getUserId(): String? {
         return userModel?.userId
     }
+
 }
