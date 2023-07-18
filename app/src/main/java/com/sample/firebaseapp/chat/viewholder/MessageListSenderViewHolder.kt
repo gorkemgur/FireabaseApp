@@ -2,14 +2,10 @@ package com.sample.firebaseapp.chat.viewholder
 
 
 import android.content.Intent
-import android.os.Message
-import android.view.View
-import android.view.View.OnLongClickListener
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
-import com.sample.firebaseapp.ui.profile.CurrentUserProfileActivity
+import com.sample.firebaseapp.ui.profile.ProfileActivity
 
 class MessageListSenderViewHolder(var binding: LayoutMessageSenderBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -20,7 +16,8 @@ class MessageListSenderViewHolder(var binding: LayoutMessageSenderBinding) :
 
         binding.userNameTextView.setOnClickListener {
 
-            val intent = Intent(binding.root.context, CurrentUserProfileActivity::class.java)
+            val intent = Intent(binding.root.context, ProfileActivity::class.java)
+            intent.putExtra("userId",model?.userId)
             binding.root.context.startActivity(intent)
         }
     }

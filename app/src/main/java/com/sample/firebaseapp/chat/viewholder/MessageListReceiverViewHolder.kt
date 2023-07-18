@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.model.MessageModel
-import com.sample.firebaseapp.ui.profile.OtherUsersProfileActivity
+import com.sample.firebaseapp.ui.profile.ProfileActivity
 
 class MessageListReceiverViewHolder(var binding: LayoutMessageReceiverBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -15,8 +15,8 @@ class MessageListReceiverViewHolder(var binding: LayoutMessageReceiverBinding): 
 
 
         binding.userNameTextView.setOnClickListener {
-            val intent = Intent(binding.root.context, OtherUsersProfileActivity::class.java)
-            intent.putExtra("userEmail",model?.email)
+            val intent = Intent(binding.root.context, ProfileActivity::class.java)
+            intent.putExtra("userId",model?.userId)
             binding.root.context.startActivity(intent)
         }
 
