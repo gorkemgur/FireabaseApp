@@ -6,6 +6,48 @@
     android:layout_height="match_parent"
     tools:context=".ui.common.profile.ProfileActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="20dp"
+        app:cardElevation="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/back_button_image_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_left_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/user_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/user_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:gravity="center"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toBottomOf="@id/back_button_image_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/back_button_image_view"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="USERNAME" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
     <ImageView
         android:id="@+id/profile_image_view"
         android:layout_width="150dp"
@@ -13,10 +55,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
-        tools:src="@drawable/ic_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/top_layout"
+        tools:src="@drawable/ic_profile" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/options_menu"
@@ -96,18 +138,6 @@
 
     </androidx.cardview.widget.CardView>
 
-
-    <TextView
-        android:id="@+id/user_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/options_menu"
-        tools:text="Sample" />
-
     <TextView
         android:id="@+id/user_email_text_view"
         android:layout_width="wrap_content"
@@ -116,7 +146,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_name_text_view"
+        app:layout_constraintTop_toBottomOf="@id/profile_image_view"
         tools:text="Sample" />
 
     <Button
