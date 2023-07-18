@@ -9,9 +9,15 @@ import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
 
+interface MessageListener {
+    fun onLongClicked(messageModel: MessageModel?)
+    fun onUserNameClicked(userId: String?) {}
+}
+
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
-    private val currentUserId: String?
+    private val currentUserId: String?,
+    private val listener: MessageListener?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
@@ -51,6 +57,13 @@ class MessageListAdapter(
 
         if (holder is MessageListSenderViewHolder) {
             holder.bind(items?.get(position))
+            holder.itemView.setOnClickListener {
+                listener?.onLongClicked(items?.get(position))
+            }
+        }
+
+        holder.itemView.setOnClickListener {
+            listener?.onUserNameClicked(items?.get(position)?.userId)
         }
     }
 

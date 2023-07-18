@@ -1,15 +1,20 @@
 package com.sample.firebaseapp.chat.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
+import com.sample.firebaseapp.chat.adapter.MessageListener
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
+import com.sample.firebaseapp.helpers.FirebaseHelper
+import com.sample.firebaseapp.model.MessageModel
 
 class GroupChatActivity : AppCompatActivity() {
 
@@ -98,12 +103,47 @@ class GroupChatActivity : AppCompatActivity() {
 
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
-            viewModel.getUserId()
+            viewModel.getUserId(),
+            messageListener
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
         binding.messageListRecyclerView.adapter = adapter
 
+    }
+
+    private val messageListener = object : MessageListener {
+        override fun onLongClicked(messageModel: MessageModel?) {
+            AlertDialog.Builder(this@GroupChatActivity)
+                .setTitle("Mesaj silinecek Onaylıyor Musun ?")
+                .setMessage("Bu Mesajı ${messageModel?.message}")
+                .setPositiveButton("Sil") { dialog, _ ->
+                    viewModel.setClickedMessageModel(messageModel)
+                    deleteMessage()
+                }
+                .setNegativeButton("İptal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        override fun onUserNameClicked(userId: String?) {
+            FirebaseHelper.getUserModelWithUserId(userId) { userModel ->
+                Log.e("userModel", userModel.toString())
+            }
+        }
+    }
+
+    private fun deleteMessage() {
+        viewModel.removeMessage(object : RequestListener {
+            override fun onSuccess() {
+                adapter?.updateData(viewModel.getMessageList())
+            }
+
+            override fun onFailed(e: java.lang.Exception) {
+                Toast.makeText(this@GroupChatActivity, e.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 
