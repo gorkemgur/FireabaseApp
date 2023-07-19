@@ -25,7 +25,6 @@ class MessageListAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
-    private var adapter: MessageListAdapter? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         return when (viewType) {
@@ -47,8 +46,6 @@ class MessageListAdapter(
                     )
                 )
             }
-        }.also { viewHolder ->
-            adapter = this
         }
     }
 
@@ -77,7 +74,6 @@ class MessageListAdapter(
 
                     deleteMessage(position)
                     items!!.removeAt(position)
-                    adapter!!.notifyItemRemoved(position)
                     notifyDataSetChanged()
                     dialog.dismiss()
                 }
