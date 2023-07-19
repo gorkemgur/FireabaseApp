@@ -146,7 +146,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image_view"
+        app:layout_constraintTop_toBottomOf="@id/options_menu"
         tools:text="Sample" />
 
     <Button
