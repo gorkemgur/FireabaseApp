@@ -45,7 +45,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getUserName(): String {
-        return userModel?.name.plus(userModel?.surName)
+        return userModel?.name.plus(" ${userModel?.surName}")
     }
 
     fun getUserEmail(): String? {
