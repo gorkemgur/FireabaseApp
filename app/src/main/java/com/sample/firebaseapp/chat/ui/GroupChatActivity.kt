@@ -11,7 +11,7 @@ import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
 
-class GroupChatActivity : AppCompatActivity() {
+class GroupChatActivity : AppCompatActivity(), MessageListAdapter.MessageDeleteListener {
 
     private lateinit var binding: ActivityGroupChatBinding
 
@@ -98,7 +98,8 @@ class GroupChatActivity : AppCompatActivity() {
 
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
-            viewModel.getUserId()
+            viewModel.getUserId(),
+            this
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
@@ -113,6 +114,21 @@ class GroupChatActivity : AppCompatActivity() {
             (viewModel.getMessageList()?.count() ?: 0) - 1
         )
         return
+    }
+
+    override fun onDeleteMessage(position: Int) {
+        viewModel.deleteMessage(position, object : RequestListener{
+            override fun onSuccess() {
+               adapter?.updateData(viewModel.getMessageList())
+            }
+
+            override fun onFailed(e: java.lang.Exception) {
+               Toast.makeText(this@GroupChatActivity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+
     }
 
 }

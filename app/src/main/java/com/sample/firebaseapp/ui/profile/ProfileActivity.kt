@@ -26,7 +26,6 @@ import java.lang.Exception
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
     private lateinit var activityResaultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -44,7 +43,6 @@ class ProfileActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(ProfileActivityViewModel::class.java)
 
         auth = Firebase.auth
-        firestore = Firebase.firestore
         storage = Firebase.storage
 
         binding.button.visibility = View.GONE

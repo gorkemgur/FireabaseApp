@@ -2,6 +2,8 @@ package com.sample.firebaseapp.chat.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -24,6 +26,10 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     private var messageList: kotlin.collections.ArrayList<MessageModel>? = arrayListOf()
 
     private var userModel: UserModel? = null
+
+    private var auth: FirebaseAuth ? = Firebase.auth
+
+
 
     init {
         FirebaseHelper.getCurrentUserModel {
@@ -86,6 +92,25 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun getUserId(): String? {
         return userModel?.userId
     }
+
+
+    fun deleteMessage(position: Int,requestListener: RequestListener) {
+
+        val message = messageList?.get(position)
+        val currentUserId =  auth!!.currentUser?.uid?: ""
+
+        if (message?.userId == currentUserId) {
+            val messageId = message.messageId
+            val databaseReference = Firebase.database.reference
+            databaseReference.child("GroupChats").child(messageId!!).removeValue().addOnSuccessListener {
+                messageList!!.removeAt(position)
+                requestListener.onSuccess()
+            }.addOnFailureListener {
+                requestListener.onFailed(e = java.lang.Exception())
+            }
+        }
+    }
+
 
 
 
