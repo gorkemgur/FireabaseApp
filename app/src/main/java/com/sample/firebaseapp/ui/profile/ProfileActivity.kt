@@ -45,47 +45,20 @@ class ProfileActivity : AppCompatActivity() {
         auth = Firebase.auth
         storage = Firebase.storage
 
+
         binding.button.visibility = View.GONE
 
 
         val extras = intent.extras
         if (extras != null) {
-
             uid = extras.getString("userId", "")
-            if (auth.currentUser?.uid == uid) {
-                FirebaseHelper.getCurrentUserModel { userModel ->
-                    if (userModel != null) {
-                        binding.textViewEmail.text = "Email : " + userModel.email
-                        binding.textViewName.text = "Name : " + userModel.name
-                        binding.textViewSurname.text = "Surname : " + userModel.surName
-
-                    } else {
-                        Toast.makeText(this, "Login to see user information", Toast.LENGTH_LONG)
-                            .show()
-
-                    }
-                }
-            } else {
-                binding.textView.visibility = View.GONE
-
-                FirebaseHelper.getUserModel(uid!!) { userModel ->
-                    if (userModel != null) {
-                        println(userModel.email.toString())
-                        binding.textViewEmail.text = "Email : " + userModel.email + "."
-                        binding.textViewName.text = "Name : " + userModel.name
-                        binding.textViewSurname.text = "Surname : " + userModel.surName
-
-                    } else {
-                        Toast.makeText(this, "Login to see user information", Toast.LENGTH_LONG)
-                            .show()
-
-                    }
-                }
-
-            }
+            userInfo()
         }
 
+
         registerLauncher()
+
+
         uid?.let { viewModel.initialize(it, activityResaultLauncher) }
 
         binding.imageView2.setOnClickListener {
@@ -101,6 +74,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
             })
         }
+
         binding.button.setOnClickListener {
             //upload()
             viewModel.upload(selectedPicture!!, requestListener = object : RequestListener {
@@ -116,15 +90,6 @@ class ProfileActivity : AppCompatActivity() {
 
         }
 
-
-
-        viewModel.downloadUrl.observe(this) { url ->
-            if (url != null) {
-                Glide.with(this)
-                    .load(viewModel.downloadUrl.value)
-                    .into(binding.imageView2)
-            }
-        }
 
 
     }
@@ -155,5 +120,45 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Permission needed!", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+    private fun userInfo(){
+        if (auth.currentUser?.uid == uid) {
+            FirebaseHelper.getCurrentUserModel { userModel ->
+                if (userModel != null) {
+                    binding.textViewEmail.text = "Email : " + userModel.email
+                    binding.textViewName.text = "Name : " + userModel.name
+                    binding.textViewSurname.text = "Surname : " + userModel.surName
+
+                } else {
+                    Toast.makeText(this, "Login to see user information", Toast.LENGTH_LONG)
+                        .show()
+
+                }
+            }
+        } else {
+            binding.textView.visibility = View.GONE
+
+            FirebaseHelper.getUserModel(uid!!) { userModel ->
+                if (userModel != null) {
+                    binding.textViewEmail.text = "Email : " + userModel.email + "."
+                    binding.textViewName.text = "Name : " + userModel.name
+                    binding.textViewSurname.text = "Surname : " + userModel.surName
+
+                } else {
+                    Toast.makeText(this, "Login to see user information", Toast.LENGTH_LONG)
+                        .show()
+
+                }
+            }
+
+        }
+
+        viewModel.downloadUrl.observe(this) { url ->
+            if (url != null) {
+                Glide.with(this)
+                    .load(viewModel.downloadUrl.value)
+                    .into(binding.imageView2)
+            }
+        }
     }
 }

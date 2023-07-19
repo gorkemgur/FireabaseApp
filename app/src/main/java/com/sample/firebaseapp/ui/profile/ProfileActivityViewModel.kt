@@ -31,7 +31,6 @@ import java.util.*
 class ProfileActivityViewModel : ViewModel(){
 
     private val auth: FirebaseAuth = Firebase.auth
-    private val firestore: FirebaseFirestore = Firebase.firestore
     private val storage: FirebaseStorage = Firebase.storage
 
     private val _downloadUrl: MutableLiveData<String> = MutableLiveData()
