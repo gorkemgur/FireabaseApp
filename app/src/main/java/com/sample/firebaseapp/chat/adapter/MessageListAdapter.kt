@@ -1,6 +1,6 @@
 package com.sample.firebaseapp.chat.adapter
 
-import android.content.Context
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +19,7 @@ class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
     private val currentUserId: String?,
     private val messageClickListener: MessageClickListener,
-    private val context: Context
-
+    private val onUserNameClickListener: MessageListReceiverViewHolder.OnUserNameClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
@@ -33,7 +32,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),onUserNameClickListener
                 )
             }
             else -> {
@@ -42,7 +41,7 @@ class MessageListAdapter(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),onUserNameClickListener
                 )
             }
         }
@@ -55,18 +54,18 @@ class MessageListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is MessageListReceiverViewHolder) {
-            holder.bind(items?.get(position),context)
+            holder.bind(items?.get(position))
             holder.itemView.setOnLongClickListener(){
-                messageClickListener.showDeleteConfirmationDialog(items!!.get(position))
+                items?.let { it1 -> messageClickListener.showDeleteConfirmationDialog(it1.get(position)) }
                 true
 
             }
         }
 
         if (holder is MessageListSenderViewHolder) {
-            holder.bind(items?.get(position),context)
+            holder.bind(items?.get(position))
             holder.itemView.setOnLongClickListener {
-                messageClickListener.showDeleteConfirmationDialog(items!!.get(position))
+                items?.let { it1 -> messageClickListener.showDeleteConfirmationDialog(it1.get(position)) }
                 true
             }
         }

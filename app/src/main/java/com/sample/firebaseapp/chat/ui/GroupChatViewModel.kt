@@ -1,8 +1,6 @@
 package com.sample.firebaseapp.chat.ui
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,6 +16,11 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+interface MessageDeleteListener {
+    fun onMessageDeletedSuccessfully(message: MessageModel)
+    fun onMessageDeletionFailed(message: MessageModel, error: Exception)
+}
 class GroupChatViewModel(application: Application) : AndroidViewModel(application) {
     private val context = getApplication<Application>()
 
@@ -26,6 +29,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     private var messageList: kotlin.collections.ArrayList<MessageModel>? = arrayListOf()
 
     private var userModel: UserModel? = null
+
 
     init {
         FirebaseHelper.getCurrentUserModel {
@@ -84,13 +88,14 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
         return userModel?.userId
     }
 
-    fun deleteMessage(messageId:String){
+    fun deleteMessage(messageId:String,message: MessageModel, messageDeleteListener: MessageDeleteListener){
 
         databaseReference.child("GroupChats").child(messageId).removeValue()
             .addOnSuccessListener {
-                val context = getApplication<Application>().applicationContext
-                Toast.makeText(context, "Mesaj silindi", Toast.LENGTH_SHORT).show()
+                messageDeleteListener.onMessageDeletedSuccessfully(message)
             }
-            .addOnFailureListener { e-> Log.d("MessageListAdapter", "Failed to delete message: ${e.message}")}
+            .addOnFailureListener { e->
+                messageDeleteListener.onMessageDeletionFailed(message, e)
     }
+}
 }

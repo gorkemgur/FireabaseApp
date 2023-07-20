@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.sample.firebaseapp.R
 import com.sample.firebaseapp.databinding.ActivityProfileBinding
@@ -65,11 +64,10 @@ class ProfileActivity : AppCompatActivity() {
         binding.savePhotoButton.isVisible = userId == FirebaseAuth.getInstance().currentUser?.uid
 
         viewModel = ViewModelProvider(this).get(ProfileActivityViewModel::class.java)
-        viewModel.init(FirebaseAuth.getInstance(), FirebaseStorage.getInstance(), userId)
+        viewModel.init(userId)
 
-        val userRef = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
+
         viewModel.fetchUserProfile(
-            userRef,
             onSuccess = { user ->
                 binding.emailTextView.text = user.email
                 binding.nameTextView.text = user.name!!.uppercase()

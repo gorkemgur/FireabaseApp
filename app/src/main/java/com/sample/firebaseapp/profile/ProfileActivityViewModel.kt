@@ -3,6 +3,7 @@ package com.sample.firebaseapp.profile
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
@@ -21,17 +22,18 @@ class ProfileActivityViewModel(application: Application): AndroidViewModel(appli
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var userId: String
+    private lateinit var userRef : DatabaseReference
 
-    fun init(auth: FirebaseAuth, storage: FirebaseStorage, userId: String) {
-        this.auth = auth
-        this.storage = storage
+    fun init(userId: String) {
+        this.auth = FirebaseAuth.getInstance()
+        this.storage = FirebaseStorage.getInstance()
         this.userId = userId
+        this.userRef =  FirebaseDatabase.getInstance().reference.child("Users").child(userId)
     }
 
 
 
     fun fetchUserProfile(
-        userRef: DatabaseReference,
         onSuccess: (UserModel) -> Unit,
         onError: (DatabaseError) -> Unit
     ) {
@@ -96,20 +98,20 @@ class ProfileActivityViewModel(application: Application): AndroidViewModel(appli
     }
 
 
-     fun selectImage(activity: Activity) {
+     fun selectImage(context: Context) {
         val options = arrayOf<CharSequence>("Kamera", "Galeri", "İptal")
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(context)
         builder.setTitle("Profil fotoğrafı seç")
         builder.setItems(options) { _, item ->
             when {
                 options[item] == "Kamera" -> {
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    activity.startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+                    (context as Activity).startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
                 }
                 options[item] == "Galeri" -> {
                     val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                     intent.type = "image/*"
-                    activity.startActivityForResult(intent, REQUEST_IMAGE_PICK)
+                    (context as Activity).startActivityForResult(intent, REQUEST_IMAGE_PICK)
                 }
                 options[item] == "İptal" -> {
                     builder.setCancelable(true)
