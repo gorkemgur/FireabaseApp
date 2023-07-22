@@ -13,7 +13,7 @@ object FirebaseHelper {
     fun getCurrentUserModel(callback: (UserModel?) -> Unit) {
         if (Firebase.auth.currentUser != null) {
             Firebase.database.reference.child("Users").child(Firebase.auth.currentUser?.uid ?: "")
-                .addValueEventListener(object : ValueEventListener {
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         callback(snapshot.getValue(UserModel::class.java))
                     }

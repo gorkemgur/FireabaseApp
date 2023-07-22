@@ -17,13 +17,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class GroupChatViewModel(application: Application) : AndroidViewModel(application) {
-    private val context = getApplication<Application>()
-
     private var databaseReference: DatabaseReference = Firebase.database.reference
 
     private var messageList: kotlin.collections.ArrayList<MessageModel>? = arrayListOf()
 
     private var userModel: UserModel? = null
+
+    private var clickedMessageModel: MessageModel? = null
 
     init {
         FirebaseHelper.getCurrentUserModel {
@@ -34,7 +34,7 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
     fun sendMessage(message: String?, requestListener: RequestListener) {
         val key = databaseReference.child("GroupChats").push().key
         val messageModel =
-            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime())
+            MessageModel(userModel?.name, userModel?.userId, message, getCurrentTime(), false, key)
         key?.let { chatKey ->
             databaseReference.child("GroupChats").child(chatKey).setValue(messageModel)
                 .addOnCompleteListener { task ->
@@ -80,5 +80,35 @@ class GroupChatViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun getUserId(): String? {
         return userModel?.userId
+    }
+
+    fun removeMessage(requestListener: RequestListener) {
+        databaseReference.child("GroupChats").child(clickedMessageModel?.messageId ?: "")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val messageIndex = messageList?.indexOfFirst { it == clickedMessageModel }
+                    snapshot.ref.child("deleted").setValue(true).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            messageList?.get(messageIndex ?: 0)?.isDeleted = true
+                            requestListener.onSuccess()
+                        } else {
+                            task.exception?.let { requestListener.onFailed(it) }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    requestListener.onFailed(error.toException())
+                }
+
+            })
+    }
+
+    fun setClickedMessageModel(messageModel: MessageModel?) {
+        clickedMessageModel = messageModel
+    }
+
+    fun getSelectedMessageModel(): MessageModel? {
+        return clickedMessageModel
     }
 }

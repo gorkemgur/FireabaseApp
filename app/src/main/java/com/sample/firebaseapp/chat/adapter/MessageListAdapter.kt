@@ -9,14 +9,16 @@ import com.sample.firebaseapp.databinding.LayoutMessageReceiverBinding
 import com.sample.firebaseapp.databinding.LayoutMessageSenderBinding
 import com.sample.firebaseapp.model.MessageModel
 
+interface OnMessageLongClickListener {
+    fun onMessageLongClick(message: MessageModel)
+}
+
 class MessageListAdapter(
     private var items: ArrayList<MessageModel>?,
-    private val currentUserId: String?
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var messageViewType: MessageDetailEnum = MessageDetailEnum.SENDER
+    private val currentUserId: String?,
+    private val onMessageLongClickListener: OnMessageLongClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
         return when (viewType) {
             MessageDetailEnum.RECEIVER.ordinal -> {
                 MessageListReceiverViewHolder(
@@ -32,8 +34,8 @@ class MessageListAdapter(
                     LayoutMessageSenderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ), onMessageLongClickListener
                 )
             }
         }
@@ -52,25 +54,33 @@ class MessageListAdapter(
         if (holder is MessageListSenderViewHolder) {
             holder.bind(items?.get(position))
         }
+
+        holder.itemView.setOnLongClickListener {
+            val message = items?.get(position)
+            message?.let {
+                if (message.userId == currentUserId) {
+                    onMessageLongClickListener.onMessageLongClick(message)
+                    message.isDeleted = true
+                    notifyItemChanged(position)
+                }
+            }
+            true
+        }
     }
 
     override fun getItemCount(): Int {
         return items?.size ?: 0
     }
 
-
     override fun getItemViewType(position: Int): Int {
         val message = items?.get(position)
-        messageViewType = if (message?.userId == currentUserId) {
-            MessageDetailEnum.SENDER
+        return if (message?.userId == currentUserId) {
+            MessageDetailEnum.SENDER.ordinal
         } else {
-            MessageDetailEnum.RECEIVER
+            MessageDetailEnum.RECEIVER.ordinal
         }
-        return messageViewType.ordinal
     }
-
 }
-
 
 enum class MessageDetailEnum {
     RECEIVER,

@@ -5,13 +5,17 @@ import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sample.firebaseapp.R
 import com.sample.firebaseapp.RequestListener
 import com.sample.firebaseapp.chat.adapter.MessageListAdapter
+import com.sample.firebaseapp.chat.adapter.OnMessageLongClickListener
 import com.sample.firebaseapp.databinding.ActivityGroupChatBinding
+import com.sample.firebaseapp.model.MessageModel
 
-class GroupChatActivity : AppCompatActivity() {
+class GroupChatActivity : AppCompatActivity(), OnMessageLongClickListener {
 
     private lateinit var binding: ActivityGroupChatBinding
 
@@ -42,7 +46,9 @@ class GroupChatActivity : AppCompatActivity() {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
                     binding.messageListRecyclerView.post {
-                        binding.messageListRecyclerView.layoutManager?.scrollToPosition((viewModel.getMessageList()?.size ?: 0) - 1)
+                        binding.messageListRecyclerView.layoutManager?.scrollToPosition(
+                            (viewModel.getMessageList()?.size ?: 0) - 1
+                        )
                     }
                 }
             }
@@ -98,12 +104,47 @@ class GroupChatActivity : AppCompatActivity() {
 
         adapter = MessageListAdapter(
             viewModel.getMessageList(),
-            viewModel.getUserId()
+            viewModel.getUserId(),
+            this
         )
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.messageListRecyclerView.layoutManager = layoutManager
         binding.messageListRecyclerView.adapter = adapter
 
+    }
+
+
+    override fun onMessageLongClick(message: MessageModel) {
+        fun onConfirmDelete() {
+            AlertDialog.Builder(this@GroupChatActivity)
+                .setTitle(getString(R.string.confirm_delete_title))
+                .setMessage(getString(R.string.confirm_delete_message))
+                .setPositiveButton("Sil") { dialog, _ ->
+                    viewModel.setClickedMessageModel(message)
+                    deleteMessage()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Vazgeç") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        onConfirmDelete()
+    }
+
+
+    private fun deleteMessage() {
+        viewModel.removeMessage(object : RequestListener {
+            override fun onSuccess() {
+                adapter?.updateData(viewModel.getMessageList())
+            }
+
+            override fun onFailed(e: java.lang.Exception) {
+                Toast.makeText(this@GroupChatActivity, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
     }
 
 
@@ -114,5 +155,4 @@ class GroupChatActivity : AppCompatActivity() {
         )
         return
     }
-
 }
